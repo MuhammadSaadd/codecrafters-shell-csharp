@@ -24,7 +24,16 @@ while (true)
             {
                 output[i - 1] = tokens[i];
             }
+            
             Console.WriteLine(string.Join(' ', output));
+        }
+        else if (tokens[0] == Commands.Type)
+        {
+            var output = Commands.Map.Contains(tokens[1]) 
+                ? $"{tokens[1]} is a shell builtin" 
+                : $"{tokens[1]}: not found";
+
+            Console.WriteLine(output);
         }
     }
 }
