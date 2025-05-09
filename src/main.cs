@@ -5,7 +5,7 @@ HashSet<string> commands = [
     "exit 0"
 ];
 
-// Wait for user input
+
 while (true)
 {
     Console.Write("$ ");
