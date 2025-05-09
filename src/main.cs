@@ -12,11 +12,11 @@ while (true)
         Console.WriteLine($"{command}: command not found");
     else
     {
-        if (tokens[0] == Tokenizer.Tokens(Commands.Exit)[0])
+        if (tokens[0] == Commands.Exit)
         {
             if(tokens[1] == "0") Environment.Exit(0);
         }
-        else if (tokens[0] == Tokenizer.Tokens(Commands.Echo)[0])
+        else if (tokens[0] == Commands.Echo)
         {
             var output = new string[tokens.Count - 1];
 
