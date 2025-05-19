@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using src;
 
 while (true)
@@ -53,8 +54,23 @@ while (true)
             }
         }
     }
-    else if (PathVariable.TryGet(tokens[0], out path))
+    else if (PathVariable.TryGet(tokens[0], out path)) // path of an exe file, I want to run it
     {
+        var arguments = string.Join(' ', tokens.Skip(1).ToArray());
         
+        var processInfo = new ProcessStartInfo
+        {
+            FileName = Path.GetFileName(path),
+            Arguments = arguments,
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            CreateNoWindow = true
+        };
+
+        using var process = Process.Start(processInfo);
+        var output = process?.StandardOutput.ReadToEnd();
+        process?.WaitForExit();
+        Console.Write(output);
     }
+    else Console.WriteLine($"{command}: command not found");
 }
