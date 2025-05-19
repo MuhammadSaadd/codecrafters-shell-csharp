@@ -29,9 +29,20 @@ while (true)
         }
         else if (tokens[0] == Commands.Type)
         {
-            var output = Commands.Map.Contains(tokens[1]) 
-                ? $"{tokens[1]} is a shell builtin" 
-                : $"{tokens[1]}: not found";
+            string output;
+
+            if (Commands.Map.Contains(tokens[1]))
+            {
+                output = $"{tokens[1]} is a shell builtin";
+            }
+            else if (!string.IsNullOrEmpty(PathVariable.Check(tokens[1])))
+            {
+                output = $"{tokens[1]} is {PathVariable.Check(tokens[1])}";
+            }
+            else
+            {
+                output = $"{tokens[1]}: not found";
+            }
 
             Console.WriteLine(output);
         }
