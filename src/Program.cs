@@ -1,5 +1,5 @@
-using System.Diagnostics;
 using src;
+using System.Diagnostics;
 
 while (true)
 {
@@ -53,6 +53,17 @@ while (true)
         else if (tokens[0] == Commands.Pwd)
         {
             Console.WriteLine(Directory.GetCurrentDirectory());
+        }
+        else if (tokens[0] == Commands.Cd)
+        {
+            if (!Directory.Exists(string.Join(' ', tokens.Skip(1))))
+            {
+                Console.WriteLine($"cd: {string.Join(' ', tokens.Skip(1))}: No such file or directory");
+            }
+            else
+            {
+                Directory.SetCurrentDirectory(string.Join(' ', tokens.Skip(1)));
+            }
         }
     }
     else if (PathVariable.TryGet(tokens[0], out path)) // path of an exe file, I want to run it

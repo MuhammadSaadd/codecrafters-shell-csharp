@@ -6,11 +6,14 @@ public static class Commands
     public static string Echo => "echo";
     public static string Type => "type";
     public static string Pwd => "pwd";
+    public static string Cd => "cd";
 
-    public static readonly HashSet<string> Map = [
+    public static readonly HashSet<string> Map =
+    [
         Exit,
         Echo,
         Type,
-        Pwd
+        Pwd,
+        Cd
     ];
 }
