@@ -35,20 +35,20 @@ while (true)
         }
         else if (tokens[0] == Commands.Type)
         {
-                string output;
+            string output;
 
-                if (Commands.Map.Contains(tokens[1]))
-                {
-                    output = $"{tokens[1]} is a shell builtin";
-                }
-                else
-                {
-                    output = PathVariable.TryGet(tokens[1], out path)
-                        ? $"{tokens[1]} is {path}"
-                        : $"{tokens[1]}: not found";
-                }
+            if (Commands.Map.Contains(tokens[1]))
+            {
+                output = $"{tokens[1]} is a shell builtin";
+            }
+            else
+            {
+                output = PathVariable.TryGet(tokens[1], out path)
+                    ? $"{tokens[1]} is {path}"
+                    : $"{tokens[1]}: not found";
+            }
 
-                Console.WriteLine(output);
+            Console.WriteLine(output);
         }
         else if (tokens[0] == Commands.Pwd)
         {
@@ -56,20 +56,29 @@ while (true)
         }
         else if (tokens[0] == Commands.Cd)
         {
-            if (!Directory.Exists(string.Join(' ', tokens.Skip(1))))
+            if (!Directory.Exists(string.Join(' ', tokens.Skip(1))) && tokens[1] != "~") 
             {
                 Console.WriteLine($"cd: {string.Join(' ', tokens.Skip(1))}: No such file or directory");
             }
             else
             {
-                Directory.SetCurrentDirectory(string.Join(' ', tokens.Skip(1)));
+                path = tokens.Skip(1).First();
+
+                if (path == "~")
+                {
+                    Directory.SetCurrentDirectory(Environment.GetEnvironmentVariable("HOME") ?? string.Empty);
+                }
+                else
+                {
+                    Directory.SetCurrentDirectory(path);
+                }
             }
         }
     }
     else if (PathVariable.TryGet(tokens[0], out path)) // path of an exe file, I want to run it
     {
         var arguments = string.Join(' ', tokens.Skip(1).ToArray());
-        
+
         var processInfo = new ProcessStartInfo
         {
             FileName = Path.GetFileName(path),
