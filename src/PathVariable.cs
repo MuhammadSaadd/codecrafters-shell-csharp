@@ -2,11 +2,15 @@ namespace src;
 
 public static class PathVariable
 {
-    public static string Check(string token)
+    public static bool TryGet(string token, out string? value)
     {
         var pathVar = Environment.GetEnvironmentVariable("PATH");
 
-        if (pathVar == null) return string.Empty;
+        if (pathVar == null)
+        {
+            value = null;
+            return false;
+        }
 
         var paths = pathVar.Split(Path.PathSeparator);
 
@@ -14,17 +18,21 @@ public static class PathVariable
         {
             var command = ScanDirectory(path, token);
 
-            if (!string.IsNullOrEmpty(command)) return command;
+            if (string.IsNullOrEmpty(command)) continue;
+            
+            value = command;
+            return true;
         }
 
-        return string.Empty;
+        value = null;
+        return false;
     }
 
-    private static string ScanDirectory(string path, string token)
+    private static string? ScanDirectory(string path, string token)
     {
         if (!Directory.Exists(path)) return string.Empty;
         
-        var files = Directory.GetFiles(path);
+        string?[] files = Directory.GetFiles(path);
 
         foreach (var f in files)
         {

@@ -11,13 +11,12 @@ public static class Tokenizer
         //echo hello world
         StringBuilder token = new();
 
-        for (int i = 0; i < command?.Length; i++)
+        for (var i = 0; i < command?.Length; i++)
         {
             if (command[i] == ' ')
             {
                 tokens.Add(token.ToString());
                 token.Clear();
-                continue;
             }
             else
             {
