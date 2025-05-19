@@ -33,10 +33,8 @@ while (true)
 
             Console.WriteLine(string.Join(' ', output));
         }
-        else
+        else if (tokens[0] == Commands.Type)
         {
-            if (tokens[0] == Commands.Type)
-            {
                 string output;
 
                 if (Commands.Map.Contains(tokens[1]))
@@ -51,7 +49,10 @@ while (true)
                 }
 
                 Console.WriteLine(output);
-            }
+        }
+        else if (tokens[0] == Commands.Pwd)
+        {
+            Console.WriteLine(Directory.GetCurrentDirectory());
         }
     }
     else if (PathVariable.TryGet(tokens[0], out path)) // path of an exe file, I want to run it
