@@ -1,5 +1,6 @@
 using src;
 using System.Diagnostics;
+using src.ShellTokenizer;
 
 while (true)
 {
@@ -13,7 +14,9 @@ while (true)
 
     var command = Console.ReadLine();
 
-    var tokens = Tokenizer.Tokens(command);
+    var tokenizer = new Tokenizer(command);
+
+    var tokens = tokenizer.TokenizeAll();
 
     if (tokens.Count == 0) Console.WriteLine($"{command}: command not found");
     else if (Commands.Map.Contains(tokens[0]))
