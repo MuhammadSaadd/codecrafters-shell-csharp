@@ -2,25 +2,62 @@ using System.Text;
 
 namespace src;
 
+// echo
 public static class Tokenizer
 {
     public static List<string> Tokens(string? command)
     {
+        if (command == null) return [];
+
         List<string> tokens = [];
 
-        //echo hello world
+        Stack<char> quotes = [];
         StringBuilder token = new();
 
-        for (var i = 0; i < command?.Length; i++)
+        var i = 0;
+        while (i < command.Length)
         {
-            if (command[i] == ' ')
+            if (command[i] == '\'' || command[i] == '\"')
             {
-                tokens.Add(token.ToString());
-                token.Clear();
+                quotes.Push(command[i]);
+                i++;
+
+                while (i < command.Length)
+                {
+                    if (command[i] == quotes.Peek()) // '   ''
+                    {
+                        if (i + 1 < command.Length && command[i] == command[i + 1])
+                        {
+                            i += 2;
+                        }
+                        else break;
+                    }
+                    else
+                    {
+                        token.Append(command[i]);
+                        i++;
+                    }
+                }
+
+                if (i < command.Length) i++;
+                quotes.Pop();
             }
             else
             {
-                token.Append(command[i]);
+                while (i < command.Length && command[i] != ' ')
+                {
+                    token.Append(command[i]);
+                    i++;
+                }
+            }
+
+            tokens.Add(token.ToString());
+            token.Clear();
+
+            // Skip any spaces between tokens
+            while (i < command.Length && command[i] == ' ')
+            {
+                i++;
             }
         }
 

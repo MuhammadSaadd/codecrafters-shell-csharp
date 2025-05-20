@@ -56,7 +56,7 @@ while (true)
         }
         else if (tokens[0] == Commands.Cd)
         {
-            if (!Directory.Exists(string.Join(' ', tokens.Skip(1))) && tokens[1] != "~") 
+            if (!Directory.Exists(string.Join(' ', tokens.Skip(1))) && tokens[1] != "~")
             {
                 Console.WriteLine($"cd: {string.Join(' ', tokens.Skip(1))}: No such file or directory");
             }
@@ -77,21 +77,30 @@ while (true)
     }
     else if (PathVariable.TryGet(tokens[0], out path)) // path of an exe file, I want to run it
     {
-        var arguments = string.Join(' ', tokens.Skip(1).ToArray());
-
         var processInfo = new ProcessStartInfo
         {
             FileName = Path.GetFileName(path),
-            Arguments = arguments,
             UseShellExecute = false,
             RedirectStandardOutput = true,
+            RedirectStandardError = true,
             CreateNoWindow = true
         };
 
+        // Add all file arguments at once
+        foreach (var token in tokens.Skip(1))
+        {
+            processInfo.ArgumentList.Add(token); // No manual quoting!
+        }
+
         using var process = Process.Start(processInfo);
         var output = process?.StandardOutput.ReadToEnd();
+        var error = process?.StandardError.ReadToEnd();
         process?.WaitForExit();
-        Console.Write(output);
+
+        if (!string.IsNullOrEmpty(output))
+            Console.Write(output);
+        if (!string.IsNullOrEmpty(error))
+            Console.Error.Write(error);
     }
     else Console.WriteLine($"{command}: command not found");
 }

@@ -14,6 +14,6 @@ public static class Commands
         Echo,
         Type,
         Pwd,
-        Cd
+        Cd,
     ];
 }
