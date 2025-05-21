@@ -238,10 +238,8 @@ public class Tokenizer(string? input)
                             Value = tokenBuilder.ToString()
                         };
                     }
-                    else
-                    {
-                        tokenBuilder.Append(Next());
-                    }
+
+                    tokenBuilder.Append(Next());
 
                     break;
 
@@ -282,13 +280,13 @@ public class Tokenizer(string? input)
     /// <summary>
     /// Tokenizes the input string and returns all tokens.
     /// </summary>
-    public List<string> TokenizeAll()
+    public List<Token> TokenizeAll()
     {
-        var tokens = new List<string>();
+        var tokens = new List<Token>();
         Token token;
         while ((token = NextToken()).Type != TokenType.Eof)
         {
-            tokens.Add(token.Value);
+            tokens.Add(token);
         }
 
         return tokens;

@@ -1,109 +1,50 @@
 using src;
-using System.Diagnostics;
+using src.Commands;
 using src.ShellTokenizer;
 
 while (true)
 {
-    #region Vars
-
-    string? path;
-
-    #endregion
-
     Console.Write("$ ");
 
-    var command = Console.ReadLine();
+    var input = Console.ReadLine();
 
-    var tokenizer = new Tokenizer(command);
+    var tokenizer = new Tokenizer(input);
 
     var tokens = tokenizer.TokenizeAll();
 
-    if (tokens.Count == 0) Console.WriteLine($"{command}: command not found");
-    else if (Commands.Map.Contains(tokens[0]))
+    if (tokens.Count == 0) Console.WriteLine($"{input}: command not found");
+    else if (CommandsEnum.Map.Contains(tokens[0].Value))
     {
-        if (tokens[0] == Commands.Exit)
+        if (tokens[0].Value == CommandsEnum.Exit)
         {
-            if (tokens[1] == "0") Environment.Exit(0);
+            var command = new ExitCommand();
+            Commander.Invoke(command, tokens);
+            // var output =  outputWriter.ToString();
+            // var error = errorWriter.ToString();
         }
-        else if (tokens[0] == Commands.Echo)
+        else if (tokens[0].Value == CommandsEnum.Echo)
         {
-            var output = new string[tokens.Count - 1];
-
-            for (var i = 1; i < tokens.Count; i++)
-            {
-                output[i - 1] = tokens[i];
-            }
-
-            Console.WriteLine(string.Join(' ', output));
+            var command = new EchoCommand();
+            Commander.Invoke(command, tokens);
         }
-        else if (tokens[0] == Commands.Type)
+        else if (tokens[0].Value == CommandsEnum.Type)
         {
-            string output;
-
-            if (Commands.Map.Contains(tokens[1]))
-            {
-                output = $"{tokens[1]} is a shell builtin";
-            }
-            else
-            {
-                output = PathVariable.TryGet(tokens[1], out path)
-                    ? $"{tokens[1]} is {path}"
-                    : $"{tokens[1]}: not found";
-            }
-
-            Console.WriteLine(output);
+            var command = new TypeCommand();
+            Commander.Invoke(command, tokens);
         }
-        else if (tokens[0] == Commands.Pwd)
+        else if (tokens[0].Value == CommandsEnum.Pwd)
         {
-            Console.WriteLine(Directory.GetCurrentDirectory());
+            var command = new PwdCommand();
+            Commander.Invoke(command, tokens);
         }
-        else if (tokens[0] == Commands.Cd)
+        else if (tokens[0].Value == CommandsEnum.Cd)
         {
-            if (!Directory.Exists(string.Join(' ', tokens.Skip(1))) && tokens[1] != "~")
-            {
-                Console.WriteLine($"cd: {string.Join(' ', tokens.Skip(1))}: No such file or directory");
-            }
-            else
-            {
-                path = tokens.Skip(1).First();
-
-                if (path == "~")
-                {
-                    Directory.SetCurrentDirectory(Environment.GetEnvironmentVariable("HOME") ?? string.Empty);
-                }
-                else
-                {
-                    Directory.SetCurrentDirectory(path);
-                }
-            }
+            var command = new CdCommand();
+            Commander.Invoke(command, tokens);
         }
     }
-    else if (PathVariable.TryGet(tokens[0], out path)) // path of an exe file, I want to run it
+    else if (PathVariable.TryGet(tokens[0].Value, out var path)) // path of an exe file, I want to run it
     {
-        var processInfo = new ProcessStartInfo
-        {
-            FileName = Path.GetFileName(path),
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            CreateNoWindow = true
-        };
-
-        // Add all file arguments at once
-        foreach (var token in tokens.Skip(1))
-        {
-            processInfo.ArgumentList.Add(token); // No manual quoting!
-        }
-
-        using var process = Process.Start(processInfo);
-        var output = process?.StandardOutput.ReadToEnd();
-        var error = process?.StandardError.ReadToEnd();
-        process?.WaitForExit();
-
-        if (!string.IsNullOrEmpty(output))
-            Console.Write(output);
-        if (!string.IsNullOrEmpty(error))
-            Console.Error.Write(error);
     }
-    else Console.WriteLine($"{command}: command not found");
+    else Console.WriteLine($"{input}: command not found");
 }

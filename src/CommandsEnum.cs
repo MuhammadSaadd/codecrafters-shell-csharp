@@ -1,6 +1,6 @@
 namespace src;
 
-public static class Commands
+public static class CommandsEnum
 {
     public static string Exit => "exit";
     public static string Echo => "echo";
@@ -14,6 +14,6 @@ public static class Commands
         Echo,
         Type,
         Pwd,
-        Cd,
+        Cd
     ];
 }
