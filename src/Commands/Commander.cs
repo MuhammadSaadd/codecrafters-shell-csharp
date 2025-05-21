@@ -28,5 +28,10 @@ public static class Commander
             Console.SetOut(originalOut);
             Console.SetError(originalError);
         }
+
+        Console.Write(outputWriter.ToString());
+        // Console.WriteLine(errorWriter.ToString());
+        // var output =  outputWriter.ToString();
+        // var error = errorWriter.ToString();
     }
 }

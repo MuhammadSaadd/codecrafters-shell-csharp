@@ -10,13 +10,13 @@ public class TypeCommand  : ICommand
 
         if (CommandsEnum.Map.Contains(tokens[1].Value))
         {
-            output = $"{tokens[1]} is a shell builtin";
+            output = $"{tokens[1].Value} is a shell builtin";
         }
         else
         {
             output = PathVariable.TryGet(tokens[1].Value, out var path)
-                ? $"{tokens[1]} is {path}"
-                : $"{tokens[1]}: not found";
+                ? $"{tokens[1].Value} is {path}"
+                : $"{tokens[1].Value}: not found";
         }
 
         Console.WriteLine(output);

@@ -6,9 +6,9 @@ public class CdCommand : ICommand
 {
     public void Execute(List<Token> tokens)
     {
-        if (!Directory.Exists(string.Join(' ', tokens.Skip(1))) && tokens[1].Value != "~")
+        if (!Directory.Exists(string.Join(' ', tokens.Skip(1).Select(t => t.Value).FirstOrDefault())) && tokens[1].Value != "~")
         {
-            Console.WriteLine($"cd: {string.Join(' ', tokens.Skip(1))}: No such file or directory");
+            Console.WriteLine($"cd: {string.Join(' ', tokens.Skip(1).Select(t => t.Value))}: No such file or directory");
         }
         else
         {

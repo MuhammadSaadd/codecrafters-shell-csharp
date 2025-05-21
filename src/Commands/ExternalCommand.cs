@@ -3,12 +3,10 @@ using src.ShellTokenizer;
 
 namespace src.Commands;
 
-public class ExternalCommand :  ICommand
+public class ExternalCommand(string path) :  ICommand
 {
     public void Execute(List<Token> tokens)
     {
-        if (!PathVariable.TryGet(tokens[0].Value, out var path)) return;
-        
         var processInfo = new ProcessStartInfo
         {
             FileName = Path.GetFileName(path),

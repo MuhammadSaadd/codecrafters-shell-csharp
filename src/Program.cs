@@ -19,8 +19,6 @@ while (true)
         {
             var command = new ExitCommand();
             Commander.Invoke(command, tokens);
-            // var output =  outputWriter.ToString();
-            // var error = errorWriter.ToString();
         }
         else if (tokens[0].Value == CommandsEnum.Echo)
         {
@@ -45,6 +43,8 @@ while (true)
     }
     else if (PathVariable.TryGet(tokens[0].Value, out var path)) // path of an exe file, I want to run it
     {
+        var command = new ExternalCommand(path!);
+        Commander.Invoke(command, tokens);
     }
     else Console.WriteLine($"{input}: command not found");
 }
