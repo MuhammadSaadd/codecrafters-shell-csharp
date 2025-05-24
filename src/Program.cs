@@ -32,7 +32,7 @@ while (true)
             parserInfo.AppendOutput,
             parserInfo.AppendError);
     }
-    else if (PathVariablesRepository.TryGet(parserInfo.Tokens[0].Value, out var path)) // path of an exe file, I want to run it
+    else if (PathVariablesRepository.TryGet(parserInfo.Tokens[0].Value, out var path)) // path of an exe file
     {
         var command = new ExternalCommand(path!);
 

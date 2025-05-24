@@ -27,7 +27,6 @@ public static class Commander
 
         if (errorFile != null)
         {
-            Console.WriteLine("From error file if condition");
             if (File.Exists(errorFile))
             {
                 File.WriteAllText(errorFile, string.Empty);

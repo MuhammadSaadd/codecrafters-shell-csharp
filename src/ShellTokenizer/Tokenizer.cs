@@ -8,6 +8,7 @@ namespace src.ShellTokenizer;
 public class Tokenizer(string? input)
 {
     private int _position;
+    private char? _specialNumber;
     private readonly HashSet<char> _escapeInDoubleChars = ['\\', '"', '$', '`', '\n'];
     
     /// <summary>
@@ -157,6 +158,7 @@ public class Tokenizer(string? input)
                             }
                             else if (IsSpecialNumber(c) && ShellOperators.All.Contains(ReadNext().ToString()))
                             {
+                                _specialNumber = c;
                                 Next();
                             }
                             else
@@ -258,13 +260,20 @@ public class Tokenizer(string? input)
                     break;
 
                 case TokenizerState.Operator:
-                    var currentOp = tokenBuilder.ToString() + c;
+                    string currentOp;
+                    if(_specialNumber == null) currentOp = tokenBuilder.ToString() + c;
+                    else
+                    {
+                        currentOp = _specialNumber +  tokenBuilder.ToString() + c;
+                    }
 
                     // Check if adding this character would still form a valid operator
                     var foundLongerOp = ShellOperators.All.Any(op => op.StartsWith(currentOp));
 
                     if (foundLongerOp)
                     {
+                        tokenBuilder.Append(_specialNumber);
+                        _specialNumber = null;
                         // Continue building the operator
                         tokenBuilder.Append(Next());
                     }
