@@ -8,7 +8,6 @@ namespace src.ShellTokenizer;
 public class Tokenizer(string? input)
 {
     private int _position;
-    private readonly HashSet<string> _operators = ["|", ">", ">>", "<", "<<", "&&", "||", ";", "&"];
     private readonly HashSet<char> _escapeInDoubleChars = ['\\', '"', '$', '`', '\n'];
     
     /// <summary>
@@ -28,6 +27,15 @@ public class Tokenizer(string? input)
     }
 
     /// <summary>
+    /// Returns the next character
+    /// </summary>
+    private char ReadNext()
+    {
+        var next = _position + 1;
+        return input != null && next >= input.Length ? '\0' : input![next];
+    }
+
+    /// <summary>
     /// Checks if the current character is whitespace.
     /// </summary>
     private static bool IsWhitespace(char c)
@@ -38,9 +46,11 @@ public class Tokenizer(string? input)
     /// <summary>
     /// Checks if the character could be part of an operator.
     /// </summary>
-    private static bool IsOperatorChar(char c)
+    private static bool IsSpecialNumber(char c)
     {
-        return c is '|' or '>' or '<' or '&' or ';';
+        var num = c - '0';
+        
+        return num is 1 or 2;
     }
 
     /// <summary>
@@ -115,7 +125,7 @@ public class Tokenizer(string? input)
                         }
                         default:
                         {
-                            if (IsOperatorChar(c))
+                            if (ShellOperators.IsOperator(c.ToString()))
                             {
                                 if (tokenBuilder.Length > 0)
                                 {
@@ -144,6 +154,10 @@ public class Tokenizer(string? input)
                                 }
 
                                 Next(); // Skip whitespace
+                            }
+                            else if (IsSpecialNumber(c) && ShellOperators.All.Contains(ReadNext().ToString()))
+                            {
+                                Next();
                             }
                             else
                             {
@@ -247,7 +261,7 @@ public class Tokenizer(string? input)
                     var currentOp = tokenBuilder.ToString() + c;
 
                     // Check if adding this character would still form a valid operator
-                    var foundLongerOp = _operators.Any(op => op.StartsWith(currentOp));
+                    var foundLongerOp = ShellOperators.All.Any(op => op.StartsWith(currentOp));
 
                     if (foundLongerOp)
                     {

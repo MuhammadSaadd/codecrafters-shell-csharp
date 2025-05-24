@@ -4,10 +4,45 @@ namespace src.Commands;
 
 public static class Commander
 {
-    public static void Invoke(ICommand command, List<Token> tokens)
+    public static void Invoke(
+        ICommand command,
+        List<Token> tokens,
+        string? outputFile,
+        string? errorFile,
+        bool appendOutput,
+        bool appendError)
     {
-        using var outputWriter = new StringWriter();
-        using var errorWriter = new StringWriter();
+        if (outputFile != null)
+        {
+            if (File.Exists(outputFile))
+            {
+                File.WriteAllText(outputFile, string.Empty);
+            }
+            else
+            {
+                var file = File.Create(outputFile);
+                file.Close();
+            }
+        }
+
+        if (errorFile != null)
+        {
+            Console.WriteLine("From error file if condition");
+            if (File.Exists(errorFile))
+            {
+                File.WriteAllText(errorFile, string.Empty);
+            }
+            else
+            {
+                var file = File.Create(errorFile);
+                file.Close();
+            }
+        }
+
+        using TextWriter outputWriter =
+            string.IsNullOrEmpty(outputFile) ? new StringWriter() : new StreamWriter(outputFile);
+        using TextWriter errorWriter =
+            string.IsNullOrEmpty(errorFile) ? new StringWriter() : new StreamWriter(errorFile);
 
         var originalOut = Console.Out;
         var originalError = Console.Error;
@@ -25,13 +60,24 @@ public static class Commander
         }
         finally
         {
+            outputWriter.Flush();
+            errorWriter.Flush();
+
             Console.SetOut(originalOut);
             Console.SetError(originalError);
         }
 
-        Console.Write(outputWriter.ToString());
-        // Console.WriteLine(errorWriter.ToString());
-        // var output =  outputWriter.ToString();
-        // var error = errorWriter.ToString();
+        if (outputFile == null && outputWriter is StringWriter stringOutput)
+        {
+            Console.Write(stringOutput.ToString());
+        }
+
+        if (errorFile != null || errorWriter is not StringWriter stringError) return;
+
+        var errorContent = stringError.ToString();
+        if (!string.IsNullOrEmpty(errorContent))
+        {
+            Console.Error.Write(errorContent);
+        }
     }
 }

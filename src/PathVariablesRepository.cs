@@ -1,6 +1,6 @@
 namespace src;
 
-public static class PathVariable
+public static class PathVariablesRepository
 {
     public static bool TryGet(string token, out string? value)
     {

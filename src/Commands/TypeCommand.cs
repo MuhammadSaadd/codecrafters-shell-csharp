@@ -14,7 +14,7 @@ public class TypeCommand  : ICommand
         }
         else
         {
-            output = PathVariable.TryGet(tokens[1].Value, out var path)
+            output = PathVariablesRepository.TryGet(tokens[1].Value, out var path)
                 ? $"{tokens[1].Value} is {path}"
                 : $"{tokens[1].Value}: not found";
         }

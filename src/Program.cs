@@ -11,40 +11,38 @@ while (true)
     var tokenizer = new Tokenizer(input);
 
     var tokens = tokenizer.TokenizeAll();
+    var parserInfo = Parser.Parse(tokens);
 
-    if (tokens.Count == 0) Console.WriteLine($"{input}: command not found");
-    else if (CommandsEnum.Map.Contains(tokens[0].Value))
+    if (parserInfo.Tokens.Count == 0) Console.WriteLine($"{input}: command not found");
+    else if (CommandsEnum.Map.Contains(parserInfo.Tokens[0].Value))
     {
-        if (tokens[0].Value == CommandsEnum.Exit)
-        {
-            var command = new ExitCommand();
-            Commander.Invoke(command, tokens);
-        }
-        else if (tokens[0].Value == CommandsEnum.Echo)
-        {
-            var command = new EchoCommand();
-            Commander.Invoke(command, tokens);
-        }
-        else if (tokens[0].Value == CommandsEnum.Type)
-        {
-            var command = new TypeCommand();
-            Commander.Invoke(command, tokens);
-        }
-        else if (tokens[0].Value == CommandsEnum.Pwd)
-        {
-            var command = new PwdCommand();
-            Commander.Invoke(command, tokens);
-        }
-        else if (tokens[0].Value == CommandsEnum.Cd)
-        {
-            var command = new CdCommand();
-            Commander.Invoke(command, tokens);
-        }
+        ICommand command = null!;
+
+        if (parserInfo.Tokens[0].Value == CommandsEnum.Exit) command = new ExitCommand();
+        else if (parserInfo.Tokens[0].Value == CommandsEnum.Echo) command = new EchoCommand();
+        else if (parserInfo.Tokens[0].Value == CommandsEnum.Type) command = new TypeCommand();
+        else if (parserInfo.Tokens[0].Value == CommandsEnum.Pwd) command = new PwdCommand();
+        else if (parserInfo.Tokens[0].Value == CommandsEnum.Cd) command = new CdCommand();
+
+        Commander.Invoke(
+            command,
+            parserInfo.Tokens,
+            parserInfo.OutputFile,
+            parserInfo.ErrorFile,
+            parserInfo.AppendOutput,
+            parserInfo.AppendError);
     }
-    else if (PathVariable.TryGet(tokens[0].Value, out var path)) // path of an exe file, I want to run it
+    else if (PathVariablesRepository.TryGet(parserInfo.Tokens[0].Value, out var path)) // path of an exe file, I want to run it
     {
         var command = new ExternalCommand(path!);
-        Commander.Invoke(command, tokens);
+
+        Commander.Invoke(
+            command,
+            parserInfo.Tokens,
+            parserInfo.OutputFile,
+            parserInfo.ErrorFile,
+            parserInfo.AppendOutput,
+            parserInfo.AppendError);
     }
     else Console.WriteLine($"{input}: command not found");
 }

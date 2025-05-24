@@ -1,4 +1,4 @@
-namespace src;
+namespace src.Commands;
 
 public static class CommandsEnum
 {
