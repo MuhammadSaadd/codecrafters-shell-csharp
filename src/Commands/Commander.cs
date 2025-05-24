@@ -14,34 +14,36 @@ public static class Commander
     {
         if (outputFile != null)
         {
-            if (File.Exists(outputFile))
-            {
-                File.WriteAllText(outputFile, string.Empty);
-            }
-            else
+            if (!File.Exists(outputFile))
             {
                 var file = File.Create(outputFile);
                 file.Close();
+            }
+            
+            if (!appendOutput)
+            {
+                File.WriteAllText(outputFile, string.Empty);
             }
         }
 
         if (errorFile != null)
         {
-            if (File.Exists(errorFile))
-            {
-                File.WriteAllText(errorFile, string.Empty);
-            }
-            else
+            if (!File.Exists(errorFile))
             {
                 var file = File.Create(errorFile);
                 file.Close();
             }
+            
+            if (!appendError)
+            {
+                File.WriteAllText(errorFile, string.Empty);
+            }
         }
 
         using TextWriter outputWriter =
-            string.IsNullOrEmpty(outputFile) ? new StringWriter() : new StreamWriter(outputFile);
+            string.IsNullOrEmpty(outputFile) ? new StringWriter() : new StreamWriter(outputFile, appendOutput);
         using TextWriter errorWriter =
-            string.IsNullOrEmpty(errorFile) ? new StringWriter() : new StreamWriter(errorFile);
+            string.IsNullOrEmpty(errorFile) ? new StringWriter() : new StreamWriter(errorFile, appendError);
 
         var originalOut = Console.Out;
         var originalError = Console.Error;

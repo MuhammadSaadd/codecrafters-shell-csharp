@@ -5,7 +5,7 @@ public static class ShellOperators
     public static string Pipe => "|";
     public static string OutputRedirect => ">";
     public static string StdoutRedirect => "1>";
-    public static string OutputAppend => ">>"; // 2>> | 1>>
+    public static string OutputAppend => ">>";
     public static string StdOutputAppend => "1>>";
     public static string StderrRedirect => "2>";
     public static string StderrAppend => "2>>";
@@ -24,6 +24,8 @@ public static class ShellOperators
         StdoutRedirect,
         StderrRedirect,
         OutputAppend,
+        StdOutputAppend,
+        StderrAppend,
         InputRedirect,
         HereDocument,
         LogicalAnd,
