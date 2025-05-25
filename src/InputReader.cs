@@ -18,7 +18,7 @@ public static class InputReader
                 Console.WriteLine();
                 break;
             }
-        
+
             switch (key.Key)
             {
                 case ConsoleKey.Tab:
@@ -27,7 +27,11 @@ public static class InputReader
 
                     var match = CommandsEnum.Map.FirstOrDefault(cmd => cmd.StartsWith(prefix));
 
-                    if (!string.IsNullOrEmpty(match))
+                    if (string.IsNullOrEmpty(match))
+                    {
+                        Console.Beep();
+                    }
+                    else
                     {
                         Console.Write(match[prefix.Length..] + " ");
 
@@ -54,7 +58,7 @@ public static class InputReader
                 }
             }
         }
-        
+
         return keyBuffer.ToString();
     }
 }
