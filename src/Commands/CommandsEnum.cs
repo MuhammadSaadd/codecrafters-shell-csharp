@@ -2,11 +2,11 @@ namespace src.Commands;
 
 public static class CommandsEnum
 {
-    public static string Exit => "exit";
-    public static string Echo => "echo";
-    public static string Type => "type";
-    public static string Pwd => "pwd";
-    public static string Cd => "cd";
+    public const string Echo = "echo";
+    public const string Type = "type";
+    public const string Pwd = "pwd";
+    public const string Exit = "exit";
+    public const string Cd = "cd";
 
     public static readonly HashSet<string> Map =
     [
