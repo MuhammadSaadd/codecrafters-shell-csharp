@@ -1,5 +1,4 @@
 using System.Text;
-using src.Commands;
 
 namespace src;
 
@@ -25,8 +24,9 @@ public static class InputReader
                 {
                     var prefix = keyBuffer.ToString();
 
-                    var match = CommandsEnum.Map.FirstOrDefault(cmd => cmd.StartsWith(prefix));
-
+                    var matches = Startup.Commands.GetWords(prefix);
+                    var match = matches.FirstOrDefault();
+                    
                     if (string.IsNullOrEmpty(match))
                     {
                         Console.Beep();

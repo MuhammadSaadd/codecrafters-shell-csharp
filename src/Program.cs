@@ -1,12 +1,13 @@
-using System.Text;
 using src;
 using src.Commands;
 using src.ShellTokenizer;
 
+
+Startup.Build();
+
 while (true)
 {
     Console.Write("$ ");
-
 
     var input = InputReader.Read();
 
