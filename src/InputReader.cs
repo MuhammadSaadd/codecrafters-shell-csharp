@@ -15,7 +15,6 @@ public static class InputReader
 
             if (key.Key == ConsoleKey.Enter)
             {
-                lastKey = null;
                 Console.WriteLine();
                 break;
             }
@@ -26,34 +25,51 @@ public static class InputReader
                 {
                     var prefix = keyBuffer.ToString();
 
-                    var matches = Startup.Commands.GetWords(prefix).ToList();
-                    
-                    if (matches.Count == 0)
+                    var matches = Startup.Commands
+                        .GetWords(prefix)
+                        .Order()
+                        .ToList();
+
+                    switch (matches.Count)
                     {
-                        Console.Beep();
-                    }
-                    else if(matches.Count > 1)
-                    {
-                        if(lastKey != ConsoleKey.Tab) Console.Beep();
-                        else
+                        case 0:
+                        case > 1 when lastKey != ConsoleKey.Tab:
                         {
-                            Console.WriteLine();
-                            foreach (var match in matches.Order())
+                            var lcp = LongestCommonPrefix(matches);
+
+                            if (lcp.Length <= prefix.Length)
                             {
-                                Console.Write($"{match}  ");
+                                Console.Beep();
+                            }
+                            else
+                            {
+                                var append = lcp.AsSpan(keyBuffer.Length).ToArray();
+
+                                foreach (var t in append)
+                                {
+                                    Console.Write(t);
+                                    keyBuffer.Append(t);
+                                }
                             }
                             
-                            Console.WriteLine();
-                            Console.Write($"$ {keyBuffer}");
+                            break;
                         }
-                    }
-                    else
-                    {
-                        var match = matches[0];
-                        
-                        Console.Write(match[prefix.Length..] + " ");
+                        case > 1:
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine(string.Join("  ", matches));
+                            Console.Write($"$ {keyBuffer}");
+                            break;
+                        }
+                        default:
+                        {
+                            var match = matches[0];
 
-                        keyBuffer.Append(match[prefix.Length..] + " ");
+                            Console.Write(match[prefix.Length..] + " ");
+
+                            keyBuffer.Append(match[prefix.Length..] + " ");
+                            break;
+                        }
                     }
 
                     lastKey = ConsoleKey.Tab;
@@ -67,7 +83,7 @@ public static class InputReader
                 default:
                 {
                     lastKey = null;
-                        
+
                     if (!char.IsControl(key.KeyChar))
                     {
                         Console.Write(key.KeyChar);
@@ -81,5 +97,26 @@ public static class InputReader
         }
 
         return keyBuffer.ToString();
+    }
+
+    private static string LongestCommonPrefix(List<string> matches)
+    {
+        if (matches.Count == 0) return string.Empty;
+        var prefix = matches[0];
+
+        foreach (var match in matches)
+        {
+            while (!match.StartsWith(prefix))
+            {
+                prefix = prefix.AsSpan(0, prefix.Length - 1).ToString();
+
+                if (prefix == "")
+                {
+                    return "";
+                }
+            }
+        }
+
+        return prefix;
     }
 }
