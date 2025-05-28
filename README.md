@@ -1,34 +1,31 @@
-[![progress-banner](https://backend.codecrafters.io/progress/shell/91930cc5-5dec-4f98-b0dd-9d75bc7dc2ad)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+In this project, I built my own shell by following the Codecrafters challenge instructions and developed it using my preferred language, C#.
 
-This is a starting point for C# solutions to the
-["Build Your Own Shell" Challenge](https://app.codecrafters.io/courses/shell/overview).
+Supported Features:
 
-In this challenge, you'll build your own POSIX compliant shell that's capable of
-interpreting shell commands, running external programs and builtin commands like
-cd, pwd, echo and more. Along the way, you'll learn about shell command parsing,
-REPLs, builtin commands, and more.
+    All common built-in commands such as echo, pwd, exit, and type.
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+    External commands added to the environment variables.
 
-# Passing the first stage
+    Navigation between directories using the cd command.
 
-The entry point for your `shell` implementation is in `src/main.cs`. Study and
-uncomment the relevant code, and push your changes to pass the first stage:
+    Most common quoting conventions, such as single and double quotes, with support for escape characters and executing quoted executables.
 
-```sh
-git commit -am "pass 1st stage" # any msg
-git push origin master
-```
+    Redirection of standard output and standard error, with support for appending.
 
-Time to move on to the next stage!
+    Auto-completion for built-in commands, external commands, multiple completions, and partial completions.
 
-# Stage 2 & beyond
+Components:
 
-Note: This section is for stages 2 and beyond.
+    Custom input reader that supports key strokes such as Tab, Backspace, and Enter.
 
-1. Ensure you have `dotnet (9.0)` installed locally
-1. Run `./your_program.sh` to run your program, which is implemented in
-   `src/main.cs`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+    Tokenizer using a state machine algorithm.
+
+    Token parser.
+
+    Commander that executes both built-in and external commands.
+
+Future Features:
+
+    Pipelines
+
+    Command history
